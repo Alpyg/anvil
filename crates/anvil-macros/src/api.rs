@@ -28,7 +28,7 @@ pub(crate) fn api(args: TokenStream, input: TokenStream) -> Result<TokenStream, 
 
     Ok(quote! {
         #func
-        ::inventory::submit! {
+        ::anvil_core::inventory::submit! {
             ::anvil_core::ApiEndpoint {
                 register: |router| router.route(
                     #path,
@@ -38,4 +38,3 @@ pub(crate) fn api(args: TokenStream, input: TokenStream) -> Result<TokenStream, 
         }
     })
 }
-

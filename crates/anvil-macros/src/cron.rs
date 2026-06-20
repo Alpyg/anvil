@@ -75,12 +75,12 @@ pub(crate) fn cron(args: TokenStream, input: TokenStream) -> Result<TokenStream,
     Ok(quote! {
         #func
 
-        ::inventory::submit! {
+        ::anvil_core::inventory::submit! {
             ::anvil_core::CronJob {
                 build: |services| {
                     #( let #idents = <#types as ::anvil_core::FromServices>::from_services(services)?; )*
                     #tz_setup
-                    let job = ::tokio_cron_scheduler::JobBuilder::new()
+                    let job = ::anvil_core::tokio_cron_scheduler::JobBuilder::new()
                         .with_timezone(__tz)
                         .with_cron_job_type()
                         .with_schedule(#schedule)?

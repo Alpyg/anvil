@@ -1,7 +1,9 @@
+use std::sync::Arc;
+
 use anvil_core::Svc;
 use anvil_macros::*;
-use axum::response::IntoResponse;
-use std::sync::Arc;
+use axum::{extract::Query, response::IntoResponse};
+use serde::{Deserialize, Serialize};
 
 pub trait Service1: std::fmt::Debug + Send + Sync + 'static {
     fn method1(&self) -> Result<&'static str, String>;
@@ -54,6 +56,19 @@ async fn endpoint2(
         service2.method2().unwrap(),
     )
     .into_response()
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+struct QueryReq {
+    msg: String,
+}
+
+#[api(get("/query"))]
+async fn query(
+    Svc(service1): Svc<Arc<dyn Service1>>,
+    Query(req): Query<QueryReq>,
+) -> impl IntoResponse {
+    format!("{} {}", service1.method1().unwrap(), req.msg,).into_response()
 }
 
 #[cron("* * * * * *", timezone = "Utc")]
